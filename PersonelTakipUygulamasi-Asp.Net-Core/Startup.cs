@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PersonelTakipUygulamasi_Asp.Net_Core.Data;
+using PersonelTakipUygulamasi_Asp.Net_Core.Options;
 
 namespace PersonelTakipUygulamasi_Asp.Net_Core
 {
@@ -27,9 +28,13 @@ namespace PersonelTakipUygulamasi_Asp.Net_Core
         {
             services.AddControllersWithViews();
 
-
+            //postgresql configuration
             services.AddDbContext<PersonelTakipDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("PersonelTakipDbContext")));
+
+            //swagger configuration
+            services.AddSwaggerGen();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +50,18 @@ namespace PersonelTakipUygulamasi_Asp.Net_Core
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //swagger configuration
+            app.UseSwagger(c =>
+            {
+                c.SerializeAsV2 = true;
+            });
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIV1");
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
