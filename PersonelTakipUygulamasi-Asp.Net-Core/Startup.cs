@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PersonelTakipUygulamasi_Asp.Net_Core.Data;
-using PersonelTakipUygulamasi_Asp.Net_Core.Options;
 
 namespace PersonelTakipUygulamasi_Asp.Net_Core
 {
@@ -33,7 +32,15 @@ namespace PersonelTakipUygulamasi_Asp.Net_Core
             options.UseNpgsql(Configuration.GetConnectionString("PersonelTakipDbContext")));
 
             //swagger configuration
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { 
+                Title="Swagger Dema API",
+                Description="Demo API",
+                Version="v1"
+                
+                });
+            });
 
         }
 
@@ -52,14 +59,10 @@ namespace PersonelTakipUygulamasi_Asp.Net_Core
             }
 
             //swagger configuration
-            app.UseSwagger(c =>
-            {
-                c.SerializeAsV2 = true;
-            });
-
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIV1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
             });
 
             app.UseHttpsRedirection();
@@ -71,10 +74,10 @@ namespace PersonelTakipUygulamasi_Asp.Net_Core
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+
             });
+
         }
     }
 }
